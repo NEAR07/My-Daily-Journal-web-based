@@ -1,16 +1,27 @@
 <?php
 include('config.php');
 
+$error_message = ""; // Tambahkan variabel untuk menyimpan pesan kesalahan
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+    // Periksa apakah username sudah ada
+    $sql = "SELECT * FROM users WHERE username='$username'";
+    $result = $conn->query($sql);
 
-    if ($conn->query($sql) === TRUE) {
-        header("Location: login.php");
+    if ($result->num_rows > 0) {
+        $error_message = "Username already exists!";
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        // Lanjutkan dengan proses penyimpanan jika username tidak ada
+        $sql = "INSERT INTO users (username, password) VALUES ('$username', '$password')";
+
+        if ($conn->query($sql) === TRUE) {
+            header("Location: login.php");
+        } else {
+            $error_message = "Error: " . $sql . "<br>" . $conn->error;
+        }
     }
 }
 ?>
@@ -54,6 +65,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="outer-container">
         <div class="container">
             <h2 class="text-center">Register</h2>
+            <?php if ($error_message): ?>
+                <div class="alert alert-danger"><?php echo $error_message; ?></div>
+            <?php endif; ?>
             <form method="POST" action="">
                 <div class="form-group">
                     <label>Username</label>
