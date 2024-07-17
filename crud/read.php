@@ -48,7 +48,7 @@ $result = $conn->query($sql);
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    <th>No</th>
                     <th>Entry Date Time</th>
                     <th>Description</th>
                     <th>Action</th>
@@ -57,9 +57,10 @@ $result = $conn->query($sql);
             <tbody>
                 <?php
                 if ($result->num_rows > 0) {
+                    $no = 1;
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>
-                                <td>" . $row['id'] . "</td>
+                                <td>" . $no++ . "</td>
                                 <td>" . $row['entry_datetime'] . "</td>
                                 <td>" . $row['description'] . "</td>
                                 <td>
